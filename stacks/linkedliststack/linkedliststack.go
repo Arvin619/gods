@@ -13,8 +13,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/emirpasic/gods/v2/lists/singlylinkedlist"
-	"github.com/emirpasic/gods/v2/stacks"
+	"github.com/Arvin619/gods/lists/singlylinkedlist"
+	"github.com/Arvin619/gods/stacks"
 )
 
 // Assert Stack implementation

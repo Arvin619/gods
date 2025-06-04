@@ -7,12 +7,14 @@ package redblacktree
 import (
 	"encoding/json"
 
-	"github.com/emirpasic/gods/v2/containers"
+	"github.com/Arvin619/gods/containers"
 )
 
 // Assert Serialization implementation
-var _ containers.JSONSerializer = (*Tree[string, int])(nil)
-var _ containers.JSONDeserializer = (*Tree[string, int])(nil)
+var (
+	_ containers.JSONSerializer   = (*Tree[string, int])(nil)
+	_ containers.JSONDeserializer = (*Tree[string, int])(nil)
+)
 
 // ToJSON outputs the JSON representation of the tree.
 func (tree *Tree[K, V]) ToJSON() ([]byte, error) {

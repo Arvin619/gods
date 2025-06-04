@@ -7,7 +7,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/emirpasic/gods/v2/sets/treeset"
+	"github.com/Arvin619/gods/sets/treeset"
 )
 
 // User model (id and name)
@@ -18,7 +18,6 @@ type User struct {
 
 // Comparator function (sort by IDs)
 func byID(a, b User) int {
-
 	switch {
 	case a.id > b.id:
 		return 1

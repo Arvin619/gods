@@ -7,7 +7,7 @@ package main
 import (
 	"cmp"
 
-	sll "github.com/emirpasic/gods/v2/lists/singlylinkedlist"
+	sll "github.com/Arvin619/gods/lists/singlylinkedlist"
 )
 
 // SinglyLinkedListExample to demonstrate basic usage of SinglyLinkedList

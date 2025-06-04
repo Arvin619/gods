@@ -1,3 +1,3 @@
-module github.com/emirpasic/gods/v2
+module github.com/Arvin619/gods
 
 go 1.21

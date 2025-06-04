@@ -16,9 +16,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/emirpasic/gods/v2/maps"
-	rbt "github.com/emirpasic/gods/v2/trees/redblacktree"
-	"github.com/emirpasic/gods/v2/utils"
+	"github.com/Arvin619/gods/maps"
+	rbt "github.com/Arvin619/gods/trees/redblacktree"
+	"github.com/Arvin619/gods/utils"
 )
 
 // Assert Map implementation
@@ -143,5 +143,4 @@ func (m *Map[K, V]) String() string {
 		str += fmt.Sprintf("%v:%v ", it.Key(), it.Value())
 	}
 	return strings.TrimRight(str, " ") + "]"
-
 }

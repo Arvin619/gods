@@ -15,8 +15,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/emirpasic/gods/v2/lists/doublylinkedlist"
-	"github.com/emirpasic/gods/v2/maps"
+	"github.com/Arvin619/gods/lists/doublylinkedlist"
+	"github.com/Arvin619/gods/maps"
 )
 
 // Assert Map implementation
@@ -104,5 +104,4 @@ func (m *Map[K, V]) String() string {
 		str += fmt.Sprintf("%v:%v ", it.Key(), it.Value())
 	}
 	return strings.TrimRight(str, " ") + "]"
-
 }

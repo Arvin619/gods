@@ -7,12 +7,14 @@ package arraylist
 import (
 	"encoding/json"
 
-	"github.com/emirpasic/gods/v2/containers"
+	"github.com/Arvin619/gods/containers"
 )
 
 // Assert Serialization implementation
-var _ containers.JSONSerializer = (*List[int])(nil)
-var _ containers.JSONDeserializer = (*List[int])(nil)
+var (
+	_ containers.JSONSerializer   = (*List[int])(nil)
+	_ containers.JSONDeserializer = (*List[int])(nil)
+)
 
 // ToJSON outputs the JSON representation of list's elements.
 func (list *List[T]) ToJSON() ([]byte, error) {

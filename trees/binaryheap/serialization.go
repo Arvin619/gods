@@ -5,12 +5,14 @@
 package binaryheap
 
 import (
-	"github.com/emirpasic/gods/v2/containers"
+	"github.com/Arvin619/gods/containers"
 )
 
 // Assert Serialization implementation
-var _ containers.JSONSerializer = (*Heap[int])(nil)
-var _ containers.JSONDeserializer = (*Heap[int])(nil)
+var (
+	_ containers.JSONSerializer   = (*Heap[int])(nil)
+	_ containers.JSONDeserializer = (*Heap[int])(nil)
+)
 
 // ToJSON outputs the JSON representation of the heap.
 func (heap *Heap[T]) ToJSON() ([]byte, error) {

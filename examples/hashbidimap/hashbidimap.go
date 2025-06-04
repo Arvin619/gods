@@ -4,7 +4,7 @@
 
 package main
 
-import "github.com/emirpasic/gods/v2/maps/hashbidimap"
+import "github.com/Arvin619/gods/maps/hashbidimap"
 
 // HashBidiMapExample to demonstrate basic usage of HashMap
 func main() {

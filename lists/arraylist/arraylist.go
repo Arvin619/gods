@@ -14,8 +14,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/emirpasic/gods/v2/lists"
-	"github.com/emirpasic/gods/v2/utils"
+	"github.com/Arvin619/gods/lists"
+	"github.com/Arvin619/gods/utils"
 )
 
 // Assert List implementation
@@ -52,7 +52,6 @@ func (list *List[T]) Add(values ...T) {
 // Get returns the element at index.
 // Second return parameter is true if index is within bounds of the array and array is not empty, otherwise false.
 func (list *List[T]) Get(index int) (T, bool) {
-
 	if !list.withinRange(index) {
 		var t T
 		return t, false
@@ -63,7 +62,6 @@ func (list *List[T]) Get(index int) (T, bool) {
 
 // Remove removes the element at the given index from the list.
 func (list *List[T]) Remove(index int) {
-
 	if !list.withinRange(index) {
 		return
 	}
@@ -147,7 +145,6 @@ func (list *List[T]) Insert(index int, values ...T) {
 // Does not do anything if position is negative or bigger than list's size
 // Note: position equal to list's size is valid, i.e. append.
 func (list *List[T]) Set(index int, value T) {
-
 	if !list.withinRange(index) {
 		// Append
 		if index == len(list.elements) {

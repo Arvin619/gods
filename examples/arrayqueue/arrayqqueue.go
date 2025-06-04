@@ -4,7 +4,7 @@
 
 package main
 
-import aq "github.com/emirpasic/gods/v2/queues/arrayqueue"
+import aq "github.com/Arvin619/gods/queues/arrayqueue"
 
 // ArrayQueueExample to demonstrate basic usage of ArrayQueue
 func main() {

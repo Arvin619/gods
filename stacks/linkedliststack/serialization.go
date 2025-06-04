@@ -5,12 +5,14 @@
 package linkedliststack
 
 import (
-	"github.com/emirpasic/gods/v2/containers"
+	"github.com/Arvin619/gods/containers"
 )
 
 // Assert Serialization implementation
-var _ containers.JSONSerializer = (*Stack[int])(nil)
-var _ containers.JSONDeserializer = (*Stack[int])(nil)
+var (
+	_ containers.JSONSerializer   = (*Stack[int])(nil)
+	_ containers.JSONDeserializer = (*Stack[int])(nil)
+)
 
 // ToJSON outputs the JSON representation of the stack.
 func (stack *Stack[T]) ToJSON() ([]byte, error) {

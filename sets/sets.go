@@ -10,7 +10,7 @@
 package sets
 
 import (
-	"github.com/emirpasic/gods/v2/containers"
+	"github.com/Arvin619/gods/containers"
 )
 
 // Set interface that all sets implement

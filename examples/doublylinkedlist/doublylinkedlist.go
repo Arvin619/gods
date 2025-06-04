@@ -7,7 +7,7 @@ package main
 import (
 	"cmp"
 
-	dll "github.com/emirpasic/gods/v2/lists/doublylinkedlist"
+	dll "github.com/Arvin619/gods/lists/doublylinkedlist"
 )
 
 // DoublyLinkedListExample to demonstrate basic usage of DoublyLinkedList

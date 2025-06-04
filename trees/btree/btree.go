@@ -22,8 +22,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/emirpasic/gods/v2/trees"
-	"github.com/emirpasic/gods/v2/utils"
+	"github.com/Arvin619/gods/trees"
+	"github.com/Arvin619/gods/utils"
 )
 
 // Assert Tree implementation

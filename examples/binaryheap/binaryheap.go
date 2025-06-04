@@ -7,12 +7,11 @@ package main
 import (
 	"cmp"
 
-	"github.com/emirpasic/gods/v2/trees/binaryheap"
+	"github.com/Arvin619/gods/trees/binaryheap"
 )
 
 // BinaryHeapExample to demonstrate basic usage of BinaryHeap
 func main() {
-
 	// Min-heap
 	heap := binaryheap.New[int]() // empty (min-heap)
 	heap.Push(2)                  // 2

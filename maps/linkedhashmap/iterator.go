@@ -5,8 +5,8 @@
 package linkedhashmap
 
 import (
-	"github.com/emirpasic/gods/v2/containers"
-	"github.com/emirpasic/gods/v2/lists/doublylinkedlist"
+	"github.com/Arvin619/gods/containers"
+	"github.com/Arvin619/gods/lists/doublylinkedlist"
 )
 
 // Assert Iterator implementation

@@ -4,7 +4,7 @@
 
 package main
 
-import llq "github.com/emirpasic/gods/v2/queues/linkedlistqueue"
+import llq "github.com/Arvin619/gods/queues/linkedlistqueue"
 
 // LinkedListQueueExample to demonstrate basic usage of LinkedListQueue
 func main() {

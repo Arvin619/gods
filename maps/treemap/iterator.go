@@ -5,8 +5,8 @@
 package treemap
 
 import (
-	"github.com/emirpasic/gods/v2/containers"
-	rbt "github.com/emirpasic/gods/v2/trees/redblacktree"
+	"github.com/Arvin619/gods/containers"
+	rbt "github.com/Arvin619/gods/trees/redblacktree"
 )
 
 // Assert Iterator implementation
