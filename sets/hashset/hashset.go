@@ -14,10 +14,14 @@ import (
 	"strings"
 
 	"github.com/Arvin619/gods/sets"
+	"github.com/Arvin619/gods/sets/internal/check"
 )
 
 // Assert Set implementation
 var _ sets.Set[int] = (*Set[int])(nil)
+
+// Assert RichSet implementation
+var _ = check.ImplementRichSet((*Set[int])(nil))
 
 // Set holds elements in go's native map
 type Set[T comparable] struct {
