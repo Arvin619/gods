@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Arvin619/gods/sets"
 	"github.com/Arvin619/gods/testutils"
 )
 
@@ -551,6 +552,81 @@ func TestSetDifference(t *testing.T) {
 	if actualValue := difference.Contains("a", "b"); actualValue != true {
 		t.Errorf("Got %v expected %v", actualValue, true)
 	}
+}
+
+func testRichSetIntersection[S any, RS sets.RichSet[int, S]](t *testing.T, set, another RS) {
+	var difference RS = set.Intersection(another)
+	if actualValue, expectedValue := difference.Size(), 0; actualValue != expectedValue {
+		t.Errorf("Got %v expected %v", actualValue, expectedValue)
+	}
+
+	set.Add(1, 3, 5, 7)
+	another.Add(5, 7, 9, 11)
+
+	difference = set.Intersection(another)
+
+	if actualValue, expectedValue := difference.Size(), 2; actualValue != expectedValue {
+		t.Errorf("Got %v expected %v", actualValue, expectedValue)
+	}
+	if actualValue := difference.Contains(5, 7); actualValue != true {
+		t.Errorf("Got %v expected %v", actualValue, true)
+	}
+}
+
+func TestRichSetIntersection(t *testing.T) {
+	set := New[int]()
+	another := New[int]()
+	testRichSetIntersection(t, set, another)
+}
+
+func testRichSetUnion[S any, RS sets.RichSet[int, S]](t *testing.T, set, another RS) {
+	var union RS = set.Union(another)
+	if actualValue, expectedValue := union.Size(), 0; actualValue != expectedValue {
+		t.Errorf("Got %v expected %v", actualValue, expectedValue)
+	}
+
+	set.Add(1, 3, 5, 7)
+	another.Add(5, 7, 9, 11)
+
+	union = set.Union(another)
+
+	if actualValue, expectedValue := union.Size(), 6; actualValue != expectedValue {
+		t.Errorf("Got %v expected %v", actualValue, expectedValue)
+	}
+	if actualValue := union.Contains(1, 3, 5, 7, 9, 11); actualValue != true {
+		t.Errorf("Got %v expected %v", actualValue, true)
+	}
+}
+
+func TestRichSetUnion(t *testing.T) {
+	set := New[int]()
+	another := New[int]()
+	testRichSetUnion(t, set, another)
+}
+
+func testRichSetDifference[S any, RS sets.RichSet[int, S]](t *testing.T, set, another RS) {
+	var difference RS = set.Difference(another)
+	if actualValue, expectedValue := difference.Size(), 0; actualValue != expectedValue {
+		t.Errorf("Got %v expected %v", actualValue, expectedValue)
+	}
+
+	set.Add(1, 3, 5, 7)
+	another.Add(5, 7, 9, 11)
+
+	difference = set.Difference(another)
+
+	if actualValue, expectedValue := difference.Size(), 2; actualValue != expectedValue {
+		t.Errorf("Got %v expected %v", actualValue, expectedValue)
+	}
+	if actualValue := difference.Contains(1, 3); actualValue != true {
+		t.Errorf("Got %v expected %v", actualValue, true)
+	}
+}
+
+func TestRichSetDifference(t *testing.T) {
+	set := New[int]()
+	another := New[int]()
+	testRichSetDifference(t, set, another)
 }
 
 func benchmarkContains(b *testing.B, set *Set[int], size int) {
