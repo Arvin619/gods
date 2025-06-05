@@ -16,12 +16,16 @@ import (
 	"strings"
 
 	"github.com/Arvin619/gods/sets"
+	"github.com/Arvin619/gods/sets/internal/check"
 	rbt "github.com/Arvin619/gods/trees/redblacktree"
 	"github.com/Arvin619/gods/utils"
 )
 
 // Assert Set implementation
 var _ sets.Set[int] = (*Set[int])(nil)
+
+// Assert RichSet implementation
+var _ = check.ImplementRichSet((*Set[int])(nil))
 
 // Set holds elements in a red-black tree
 type Set[T comparable] struct {

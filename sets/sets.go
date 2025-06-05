@@ -26,3 +26,14 @@ type Set[T comparable] interface {
 	// Values() []interface{}
 	// String() string
 }
+
+// RichSet is a generic extension of Set with basic set operations.
+// It assumes S is a pointer to a type implementing Set[T] and these operations.
+type RichSet[T comparable, S any] interface {
+	*S // pointer constraint
+
+	Set[T]
+	Intersection(another *S) *S
+	Union(another *S) *S
+	Difference(another *S) *S
+}
