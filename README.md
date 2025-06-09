@@ -13,50 +13,53 @@ Implementation of various data structures and algorithms in Go.
 
 ## Data Structures
 
-- [Containers](#containers)
-  - [Lists](#lists)
-    - [ArrayList](#arraylist)
-    - [SinglyLinkedList](#singlylinkedlist)
-    - [DoublyLinkedList](#doublylinkedlist)
-  - [Sets](#sets)
-    - [HashSet](#hashset)
-    - [TreeSet](#treeset)
-    - [LinkedHashSet](#linkedhashset)
-  - [Stacks](#stacks)
-    - [LinkedListStack](#linkedliststack)
-    - [ArrayStack](#arraystack)
-  - [Maps](#maps)
-    - [HashMap](#hashmap)
-    - [TreeMap](#treemap)
-    - [LinkedHashMap](#linkedhashmap)
-    - [HashBidiMap](#hashbidimap)
-    - [TreeBidiMap](#treebidimap)
-  - [Trees](#trees)
-    - [RedBlackTree](#redblacktree)
-    - [AVLTree](#avltree)
-    - [BTree](#btree)
-    - [BinaryHeap](#binaryheap)
-  - [Queues](#queues)
-    - [LinkedListQueue](#linkedlistqueue)
-    - [ArrayQueue](#arrayqueue)
-    - [CircularBuffer](#circularbuffer)
-    - [PriorityQueue](#priorityqueue)
-- [Functions](#functions)
-    - [Comparator](#comparator)
-    - [Iterator](#iterator)
-      - [IteratorWithIndex](#iteratorwithindex)
-      - [IteratorWithKey](#iteratorwithkey)
-      - [ReverseIteratorWithIndex](#reverseiteratorwithindex)
-      - [ReverseIteratorWithKey](#reverseiteratorwithkey)
-    - [Enumerable](#enumerable)
-      - [EnumerableWithIndex](#enumerablewithindex)
-      - [EnumerableWithKey](#enumerablewithkey)
-    - [Serialization](#serialization)
-      - [JSONSerializer](#jsonserializer)
-      - [JSONDeserializer](#jsondeserializer)
-    - [Sort](#sort)
-    - [Container](#container)
-- [Appendix](#appendix)
+- [GoDS (Go Data Structures)](#gods-go-data-structures)
+	- [Data Structures](#data-structures)
+	- [Containers](#containers)
+		- [Lists](#lists)
+			- [ArrayList](#arraylist)
+			- [SinglyLinkedList](#singlylinkedlist)
+			- [DoublyLinkedList](#doublylinkedlist)
+		- [Sets](#sets)
+			- [HashSet](#hashset)
+			- [TreeSet](#treeset)
+			- [LinkedHashSet](#linkedhashset)
+		- [Stacks](#stacks)
+			- [LinkedListStack](#linkedliststack)
+			- [ArrayStack](#arraystack)
+		- [Maps](#maps)
+			- [HashMap](#hashmap)
+			- [TreeMap](#treemap)
+			- [LinkedHashMap](#linkedhashmap)
+			- [HashBidiMap](#hashbidimap)
+			- [TreeBidiMap](#treebidimap)
+		- [Trees](#trees)
+			- [RedBlackTree](#redblacktree)
+			- [AVLTree](#avltree)
+			- [BTree](#btree)
+			- [BinaryHeap](#binaryheap)
+		- [Queues](#queues)
+			- [LinkedListQueue](#linkedlistqueue)
+			- [ArrayQueue](#arrayqueue)
+			- [CircularBuffer](#circularbuffer)
+			- [PriorityQueue](#priorityqueue)
+	- [Functions](#functions)
+		- [Comparator](#comparator)
+		- [Iterator](#iterator)
+			- [IteratorWithIndex](#iteratorwithindex)
+			- [IteratorWithKey](#iteratorwithkey)
+			- [ReverseIteratorWithIndex](#reverseiteratorwithindex)
+			- [ReverseIteratorWithKey](#reverseiteratorwithkey)
+		- [Enumerable](#enumerable)
+			- [EnumerableWithIndex](#enumerablewithindex)
+			- [EnumerableWithKey](#enumerablewithkey)
+		- [Serialization](#serialization)
+			- [JSONSerializer](#jsonserializer)
+			- [JSONDeserializer](#jsondeserializer)
+		- [Container](#container)
+	- [Appendix](#appendix)
+		- [Motivation](#motivation)
+		- [Goals](#goals)
 
 
 ## Containers
@@ -64,11 +67,11 @@ Implementation of various data structures and algorithms in Go.
 All data structures implement the container interface with the following methods:
 
 ```go
-type Container interface {
+type Container[T any] interface {
 	Empty() bool
 	Size() int
 	Clear()
-	Values() []interface{}
+	Values() []T
 	String() string
 }
 ```
@@ -113,22 +116,22 @@ A list is a data structure that stores values and may have repeated values.
 Implements [Container](#containers) interface.
 
 ```go
-type List interface {
-	Get(index int) (interface{}, bool)
+type List[T comparable] interface {
+	Get(index int) (T, bool)
 	Remove(index int)
-	Add(values ...interface{})
-	Contains(values ...interface{}) bool
-	Sort(comparator utils.Comparator)
+	Add(values ...T)
+	Contains(values ...T) bool
+	Sort(comparator utils.Comparator[T])
 	Swap(index1, index2 int)
-	Insert(index int, values ...interface{})
-	Set(index int, value interface{})
+	Insert(index int, values ...T)
+	Set(index int, value T)
 
-	containers.Container
+	containers.Container[T]
 	// Empty() bool
 	// Size() int
 	// Clear()
-	// Values() []interface{}
-    // String() string
+	// Values() []T
+	// String() string
 }
 ```
 
@@ -142,15 +145,16 @@ Implements [List](#lists), [ReverseIteratorWithIndex](#reverseiteratorwithindex)
 package main
 
 import (
-	"github.com/emirpasic/gods/lists/arraylist"
-	"github.com/emirpasic/gods/utils"
+	"cmp"
+
+	"github.com/Arvin619/gods/lists/arraylist"
 )
 
 func main() {
-	list := arraylist.New()
+	list := arraylist.New[string]()
 	list.Add("a")                         // ["a"]
 	list.Add("c", "b")                    // ["a","c","b"]
-	list.Sort(utils.StringComparator)     // ["a","b","c"]
+	list.Sort(cmp.Compare)                // ["a","b","c"]
 	_, _ = list.Get(0)                    // "a",true
 	_, _ = list.Get(100)                  // nil,false
 	_ = list.Contains("a", "b", "c")      // true
@@ -164,8 +168,6 @@ func main() {
 	_ = list.Size()                       // 0
 	list.Add("a")                         // ["a"]
 	list.Clear()                          // []
-	list.Insert(0, "b")                   // ["b"]
-	list.Insert(0, "a")                   // ["a","b"]
 }
 ```
 
@@ -179,30 +181,29 @@ Implements [List](#lists), [IteratorWithIndex](#iteratorwithindex), [EnumerableW
 package main
 
 import (
-	sll "github.com/emirpasic/gods/lists/singlylinkedlist"
-	"github.com/emirpasic/gods/utils"
+	"cmp"
+
+	sll "github.com/Arvin619/gods/lists/singlylinkedlist"
 )
 
 func main() {
-	list := sll.New()
+	list := sll.New[string]()
 	list.Add("a")                         // ["a"]
-	list.Add("c", "b")                    // ["a","c","b"]
-	list.Sort(utils.StringComparator)     // ["a","b","c"]
+	list.Append("b")                      // ["a","b"] (same as Add())
+	list.Prepend("c")                     // ["c","a","b"]
+	list.Sort(cmp.Compare)                // ["a","b","c"]
 	_, _ = list.Get(0)                    // "a",true
 	_, _ = list.Get(100)                  // nil,false
 	_ = list.Contains("a", "b", "c")      // true
 	_ = list.Contains("a", "b", "c", "d") // false
-	list.Swap(0, 1)                       // ["b","a",c"]
-	list.Remove(2)                        // ["b","a"]
-	list.Remove(1)                        // ["b"]
+	list.Remove(2)                        // ["a","b"]
+	list.Remove(1)                        // ["a"]
 	list.Remove(0)                        // []
 	list.Remove(0)                        // [] (ignored)
 	_ = list.Empty()                      // true
 	_ = list.Size()                       // 0
 	list.Add("a")                         // ["a"]
 	list.Clear()                          // []
-	list.Insert(0, "b")                   // ["b"]
-	list.Insert(0, "a")                   // ["a","b"]
 }
 ```
 
@@ -216,30 +217,29 @@ Implements [List](#lists), [ReverseIteratorWithIndex](#reverseiteratorwithindex)
 package main
 
 import (
-	dll "github.com/emirpasic/gods/lists/doublylinkedlist"
-	"github.com/emirpasic/gods/utils"
+	"cmp"
+
+	dll "github.com/Arvin619/gods/lists/doublylinkedlist"
 )
 
 func main() {
-	list := dll.New()
+	list := dll.New[string]()
 	list.Add("a")                         // ["a"]
-	list.Add("c", "b")                    // ["a","c","b"]
-	list.Sort(utils.StringComparator)     // ["a","b","c"]
+	list.Append("b")                      // ["a","b"] (same as Add())
+	list.Prepend("c")                     // ["c","a","b"]
+	list.Sort(cmp.Compare)                // ["a","b","c"]
 	_, _ = list.Get(0)                    // "a",true
 	_, _ = list.Get(100)                  // nil,false
 	_ = list.Contains("a", "b", "c")      // true
 	_ = list.Contains("a", "b", "c", "d") // false
-	list.Swap(0, 1)                       // ["b","a",c"]
-	list.Remove(2)                        // ["b","a"]
-	list.Remove(1)                        // ["b"]
+	list.Remove(2)                        // ["a","b"]
+	list.Remove(1)                        // ["a"]
 	list.Remove(0)                        // []
 	list.Remove(0)                        // [] (ignored)
 	_ = list.Empty()                      // true
 	_ = list.Size()                       // 0
 	list.Add("a")                         // ["a"]
 	list.Clear()                          // []
-	list.Insert(0, "b")                   // ["b"]
-	list.Insert(0, "a")                   // ["a","b"]
 }
 ```
 
@@ -252,19 +252,16 @@ Set additionally allow set operations such as [intersection](https://en.wikipedi
 Implements [Container](#containers) interface.
 
 ```go
-type Set interface {
-	Add(elements ...interface{})
-	Remove(elements ...interface{})
-	Contains(elements ...interface{}) bool
-    // Intersection(another *Set) *Set
-    // Union(another *Set) *Set
-    // Difference(another *Set) *Set
-	
-	containers.Container
+type Set[T comparable] interface {
+	Add(elements ...T)
+	Remove(elements ...T)
+	Contains(elements ...T) bool
+
+	containers.Container[T]
 	// Empty() bool
 	// Size() int
 	// Clear()
-	// Values() []interface{}
+	// Values() []T
 	// String() string
 }
 ```
@@ -278,21 +275,21 @@ Implements [Set](#sets), [JSONSerializer](#jsonserializer) and [JSONDeserializer
 ```go
 package main
 
-import "github.com/emirpasic/gods/sets/hashset"
+import "github.com/Arvin619/gods/sets/hashset"
 
 func main() {
-	set := hashset.New()   // empty
-	set.Add(1)             // 1
-	set.Add(2, 2, 3, 4, 5) // 3, 1, 2, 4, 5 (random order, duplicates ignored)
-	set.Remove(4)          // 5, 3, 2, 1 (random order)
-	set.Remove(2, 3)       // 1, 5 (random order)
-	set.Contains(1)        // true
-	set.Contains(1, 5)     // true
-	set.Contains(1, 6)     // false
-	_ = set.Values()       // []int{5,1} (random order)
-	set.Clear()            // empty
-	set.Empty()            // true
-	set.Size()             // 0
+	set := hashset.New[int]() // empty (keys are of type int)
+	set.Add(1)                // 1
+	set.Add(2, 2, 3, 4, 5)    // 3, 1, 2, 4, 5 (random order, duplicates ignored)
+	set.Remove(4)             // 5, 3, 2, 1 (random order)
+	set.Remove(2, 3)          // 1, 5 (random order)
+	set.Contains(1)           // true
+	set.Contains(1, 5)        // true
+	set.Contains(1, 6)        // false
+	_ = set.Values()          // []int{5,1} (random order)
+	set.Clear()               // empty
+	set.Empty()               // true
+	set.Size()                // 0
 }
 ```
 
@@ -305,21 +302,21 @@ Implements [Set](#sets), [ReverseIteratorWithIndex](#reverseiteratorwithindex), 
 ```go
 package main
 
-import "github.com/emirpasic/gods/sets/treeset"
+import "github.com/Arvin619/gods/sets/treeset"
 
 func main() {
-	set := treeset.NewWithIntComparator() // empty (keys are of type int)
-	set.Add(1)                            // 1
-	set.Add(2, 2, 3, 4, 5)                // 1, 2, 3, 4, 5 (in order, duplicates ignored)
-	set.Remove(4)                         // 1, 2, 3, 5 (in order)
-	set.Remove(2, 3)                      // 1, 5 (in order)
-	set.Contains(1)                       // true
-	set.Contains(1, 5)                    // true
-	set.Contains(1, 6)                    // false
-	_ = set.Values()                      // []int{1,5} (in order)
-	set.Clear()                           // empty
-	set.Empty()                           // true
-	set.Size()                            // 0
+	set := treeset.New[int]() // empty
+	set.Add(1)                // 1
+	set.Add(2, 2, 3, 4, 5)    // 1, 2, 3, 4, 5 (in order, duplicates ignored)
+	set.Remove(4)             // 1, 2, 3, 5 (in order)
+	set.Remove(2, 3)          // 1, 5 (in order)
+	set.Contains(1)           // true
+	set.Contains(1, 5)        // true
+	set.Contains(1, 6)        // false
+	_ = set.Values()          // []int{1,5} (in order)
+	set.Clear()               // empty
+	set.Empty()               // true
+	set.Size()                // 0
 }
 ```
 
@@ -332,22 +329,21 @@ Implements [Set](#sets), [ReverseIteratorWithIndex](#reverseiteratorwithindex), 
 ```go
 package main
 
-import "github.com/emirpasic/gods/sets/linkedhashset"
+import "github.com/Arvin619/gods/sets/linkedhashset"
 
 func main() {
-	set := linkedhashset.New() // empty
-	set.Add(5)                 // 5
-	set.Add(4, 4, 3, 2, 1)     // 5, 4, 3, 2, 1 (in insertion-order, duplicates ignored)
-	set.Add(4)                 // 5, 4, 3, 2, 1 (duplicates ignored, insertion-order unchanged)
-	set.Remove(4)              // 5, 3, 2, 1 (in insertion-order)
-	set.Remove(2, 3)           // 5, 1 (in insertion-order)
-	set.Contains(1)            // true
-	set.Contains(1, 5)         // true
-	set.Contains(1, 6)         // false
-	_ = set.Values()           // []int{5, 1} (in insertion-order)
-	set.Clear()                // empty
-	set.Empty()                // true
-	set.Size()                 // 0
+	set := linkedhashset.New[int]() // empty
+	set.Add(5)                      // 5
+	set.Add(4, 4, 3, 2, 1)          // 5, 4, 3, 2, 1 (in insertion-order, duplicates ignored)
+	set.Remove(4)                   // 5, 3, 2, 1 (in insertion-order)
+	set.Remove(2, 3)                // 5, 1 (in insertion-order)
+	set.Contains(1)                 // true
+	set.Contains(1, 5)              // true
+	set.Contains(1, 6)              // false
+	_ = set.Values()                // []int{5, 1} (in insertion-order)
+	set.Clear()                     // empty
+	set.Empty()                     // true
+	set.Size()                      // 0
 }
 ```
 
@@ -358,16 +354,16 @@ A stack that represents a last-in-first-out (LIFO) data structure. The usual pus
 Implements [Container](#containers) interface.
 
 ```go
-type Stack interface {
-	Push(value interface{})
-	Pop() (value interface{}, ok bool)
-	Peek() (value interface{}, ok bool)
+type Stack[T any] interface {
+	Push(value T)
+	Pop() (value T, ok bool)
+	Peek() (value T, ok bool)
 
-	containers.Container
+	containers.Container[T]
 	// Empty() bool
 	// Size() int
 	// Clear()
-	// Values() []interface{}
+	// Values() []T
 	// String() string
 }
 ```
@@ -381,21 +377,21 @@ Implements [Stack](#stacks), [IteratorWithIndex](#iteratorwithindex), [JSONSeria
 ```go
 package main
 
-import lls "github.com/emirpasic/gods/stacks/linkedliststack"
+import lls "github.com/Arvin619/gods/stacks/linkedliststack"
 
 func main() {
-	stack := lls.New()  // empty
-	stack.Push(1)       // 1
-	stack.Push(2)       // 1, 2
-	stack.Values()      // 2, 1 (LIFO order)
-	_, _ = stack.Peek() // 2,true
-	_, _ = stack.Pop()  // 2, true
-	_, _ = stack.Pop()  // 1, true
-	_, _ = stack.Pop()  // nil, false (nothing to pop)
-	stack.Push(1)       // 1
-	stack.Clear()       // empty
-	stack.Empty()       // true
-	stack.Size()        // 0
+	stack := lls.New[int]() // empty
+	stack.Push(1)           // 1
+	stack.Push(2)           // 1, 2
+	stack.Values()          // 2, 1 (LIFO order)
+	_, _ = stack.Peek()     // 2,true
+	_, _ = stack.Pop()      // 2, true
+	_, _ = stack.Pop()      // 1, true
+	_, _ = stack.Pop()      // nil, false (nothing to pop)
+	stack.Push(1)           // 1
+	stack.Clear()           // empty
+	stack.Empty()           // true
+	stack.Size()            // 0
 }
 ```
 
@@ -408,21 +404,21 @@ Implements [Stack](#stacks), [IteratorWithIndex](#iteratorwithindex), [JSONSeria
 ```go
 package main
 
-import "github.com/emirpasic/gods/stacks/arraystack"
+import "github.com/Arvin619/gods/stacks/arraystack"
 
 func main() {
-	stack := arraystack.New() // empty
-	stack.Push(1)             // 1
-	stack.Push(2)             // 1, 2
-	stack.Values()            // 2, 1 (LIFO order)
-	_, _ = stack.Peek()       // 2,true
-	_, _ = stack.Pop()        // 2, true
-	_, _ = stack.Pop()        // 1, true
-	_, _ = stack.Pop()        // nil, false (nothing to pop)
-	stack.Push(1)             // 1
-	stack.Clear()             // empty
-	stack.Empty()             // true
-	stack.Size()              // 0
+	stack := arraystack.New[int]() // empty
+	stack.Push(1)                  // 1
+	stack.Push(2)                  // 1, 2
+	stack.Values()                 // 2, 1 (LIFO order)
+	_, _ = stack.Peek()            // 2,true
+	_, _ = stack.Pop()             // 2, true
+	_, _ = stack.Pop()             // 1, true
+	_, _ = stack.Pop()             // nil, false (nothing to pop)
+	stack.Push(1)                  // 1
+	stack.Clear()                  // empty
+	stack.Empty()                  // true
+	stack.Size()                   // 0
 }
 ```
 
@@ -433,17 +429,17 @@ A Map is a data structure that maps keys to values. A map cannot contain duplica
 Implements [Container](#containers) interface.
 
 ```go
-type Map interface {
-	Put(key interface{}, value interface{})
-	Get(key interface{}) (value interface{}, found bool)
-	Remove(key interface{})
-	Keys() []interface{}
+type Map[K comparable, V any] interface {
+	Put(key K, value V)
+	Get(key K) (value V, found bool)
+	Remove(key K)
+	Keys() []K
 
-	containers.Container
+	containers.Container[V]
 	// Empty() bool
 	// Size() int
 	// Clear()
-	// Values() []interface{}
+	// Values() []T
 	// String() string
 }
 ```
@@ -451,10 +447,10 @@ type Map interface {
 A BidiMap is an extension to the Map. A bidirectional map (BidiMap), also called a hash bag, is an associative data structure in which the key-value pairs form a one-to-one relation. This relation works in both directions by allow the value to also act as a key to key, e.g. a pair (a,b) thus provides a coupling between 'a' and 'b' so that 'b' can be found when 'a' is used as a key and 'a' can be found when 'b' is used as a key.
 
 ```go
-type BidiMap interface {
-	GetKey(value interface{}) (key interface{}, found bool)
+type BidiMap[K comparable, V comparable] interface {
+	GetKey(value V) (key K, found bool)
 
-	Map
+	Map[K, V]
 }
 ```
 
@@ -467,21 +463,21 @@ Implements [Map](#maps), [JSONSerializer](#jsonserializer) and [JSONDeserializer
 ```go
 package main
 
-import "github.com/emirpasic/gods/maps/hashmap"
+import "github.com/Arvin619/gods/maps/hashmap"
 
 func main() {
-	m := hashmap.New() // empty
-	m.Put(1, "x")      // 1->x
-	m.Put(2, "b")      // 2->b, 1->x (random order)
-	m.Put(1, "a")      // 2->b, 1->a (random order)
-	_, _ = m.Get(2)    // b, true
-	_, _ = m.Get(3)    // nil, false
-	_ = m.Values()     // []interface {}{"b", "a"} (random order)
-	_ = m.Keys()       // []interface {}{1, 2} (random order)
-	m.Remove(1)        // 2->b
-	m.Clear()          // empty
-	m.Empty()          // true
-	m.Size()           // 0
+	m := hashmap.New[int, string]() // empty (keys are of type int)
+	m.Put(1, "x")                   // 1->x
+	m.Put(2, "b")                   // 2->b, 1->x  (random order)
+	m.Put(1, "a")                   // 2->b, 1->a (random order)
+	_, _ = m.Get(2)                 // b, true
+	_, _ = m.Get(3)                 // nil, false
+	_ = m.Values()                  // []string{"b", "a"} (random order)
+	_ = m.Keys()                    // []int{1, 2} (random order)
+	m.Remove(1)                     // 2->b
+	m.Clear()                       // empty
+	m.Empty()                       // true
+	m.Size()                        // 0
 }
 ```
 
@@ -494,25 +490,21 @@ Implements [Map](#maps), [ReverseIteratorWithIndex](#reverseiteratorwithindex), 
 ```go
 package main
 
-import "github.com/emirpasic/gods/maps/treemap"
+import "github.com/Arvin619/gods/maps/treemap"
 
 func main() {
-	m := treemap.NewWithIntComparator() // empty (keys are of type int)
-	m.Put(1, "x")                       // 1->x
-	m.Put(2, "b")                       // 1->x, 2->b (in order)
-	m.Put(1, "a")                       // 1->a, 2->b (in order)
-	_, _ = m.Get(2)                     // b, true
-	_, _ = m.Get(3)                     // nil, false
-	_ = m.Values()                      // []interface {}{"a", "b"} (in order)
-	_ = m.Keys()                        // []interface {}{1, 2} (in order)
-	m.Remove(1)                         // 2->b
-	m.Clear()                           // empty
-	m.Empty()                           // true
-	m.Size()                            // 0
-
-	// Other:
-	m.Min() // Returns the minimum key and its value from map.
-	m.Max() // Returns the maximum key and its value from map.
+	m := treemap.New[int, string]() // empty (keys are of type int)
+	m.Put(1, "x")                   // 1->x
+	m.Put(2, "b")                   // 1->x, 2->b (in order)
+	m.Put(1, "a")                   // 1->a, 2->b (in order)
+	_, _ = m.Get(2)                 // b, true
+	_, _ = m.Get(3)                 // nil, false
+	_ = m.Values()                  // []string{"a", "b"} (in order)
+	_ = m.Keys()                    // []int{1, 2} (in order)
+	m.Remove(1)                     // 2->b
+	m.Clear()                       // empty
+	m.Empty()                       // true
+	m.Size()                        // 0
 }
 ```
 
@@ -525,23 +517,22 @@ Implements [Map](#maps), [ReverseIteratorWithIndex](#reverseiteratorwithindex), 
 ```go
 package main
 
-import "github.com/emirpasic/gods/maps/linkedhashmap"
+import "github.com/Arvin619/gods/maps/linkedhashmap"
 
 func main() {
-	m := linkedhashmap.New() // empty (keys are of type int)
-	m.Put(2, "b")            // 2->b
-	m.Put(1, "x")            // 2->b, 1->x (insertion-order)
-	m.Put(1, "a")            // 2->b, 1->a (insertion-order)
-	_, _ = m.Get(2)          // b, true
-	_, _ = m.Get(3)          // nil, false
-	_ = m.Values()           // []interface {}{"b", "a"} (insertion-order)
-	_ = m.Keys()             // []interface {}{2, 1} (insertion-order)
-	m.Remove(1)              // 2->b
-	m.Clear()                // empty
-	m.Empty()                // true
-	m.Size()                 // 0
+	m := linkedhashmap.New[int, string]() // empty (keys are of type int)
+	m.Put(2, "b")                         // 2->b
+	m.Put(1, "x")                         // 2->b, 1->x (insertion-order)
+	m.Put(1, "a")                         // 2->b, 1->a (insertion-order)
+	_, _ = m.Get(2)                       // b, true
+	_, _ = m.Get(3)                       // nil, false
+	_ = m.Values()                        // []string{"b", "a"} (insertion-order)
+	_ = m.Keys()                          // []int{2, 1} (insertion-order)
+	m.Remove(1)                           // 2->b
+	m.Clear()                             // empty
+	m.Empty()                             // true
+	m.Size()                              // 0
 }
-
 ```
 
 #### HashBidiMap
@@ -553,23 +544,23 @@ Implements [BidiMap](#maps), [JSONSerializer](#jsonserializer) and [JSONDeserial
 ```go
 package main
 
-import "github.com/emirpasic/gods/maps/hashbidimap"
+import "github.com/Arvin619/gods/maps/hashbidimap"
 
 func main() {
-	m := hashbidimap.New() // empty
-	m.Put(1, "x")          // 1->x
-	m.Put(3, "b")          // 1->x, 3->b (random order)
-	m.Put(1, "a")          // 1->a, 3->b (random order)
-	m.Put(2, "b")          // 1->a, 2->b (random order)
-	_, _ = m.GetKey("a")   // 1, true
-	_, _ = m.Get(2)        // b, true
-	_, _ = m.Get(3)        // nil, false
-	_ = m.Values()         // []interface {}{"a", "b"} (random order)
-	_ = m.Keys()           // []interface {}{1, 2} (random order)
-	m.Remove(1)            // 2->b
-	m.Clear()              // empty
-	m.Empty()              // true
-	m.Size()               // 0
+	m := hashbidimap.New[int, string]() // empty
+	m.Put(1, "x")                       // 1->x
+	m.Put(3, "b")                       // 1->x, 3->b (random order)
+	m.Put(1, "a")                       // 1->a, 3->b (random order)
+	m.Put(2, "b")                       // 1->a, 2->b (random order)
+	_, _ = m.GetKey("a")                // 1, true
+	_, _ = m.Get(2)                     // b, true
+	_, _ = m.Get(3)                     // nil, false
+	_ = m.Values()                      // []string{"a", "b"} (random order)
+	_ = m.Keys()                        // []int{1, 2} (random order)
+	m.Remove(1)                         // 2->b
+	m.Clear()                           // empty
+	m.Empty()                           // true
+	m.Size()                            // 0
 }
 ```
 
@@ -583,12 +574,11 @@ Implements [BidiMap](#maps), [ReverseIteratorWithIndex](#reverseiteratorwithinde
 package main
 
 import (
-	"github.com/emirpasic/gods/maps/treebidimap"
-	"github.com/emirpasic/gods/utils"
+	"github.com/Arvin619/gods/maps/treebidimap"
 )
 
 func main() {
-	m := treebidimap.NewWith(utils.IntComparator, utils.StringComparator)
+	m := treebidimap.New[int, string]()
 	m.Put(1, "x")        // 1->x
 	m.Put(3, "b")        // 1->x, 3->b (ordered)
 	m.Put(1, "a")        // 1->a, 3->b (ordered)
@@ -596,8 +586,8 @@ func main() {
 	_, _ = m.GetKey("a") // 1, true
 	_, _ = m.Get(2)      // b, true
 	_, _ = m.Get(3)      // nil, false
-	_ = m.Values()       // []interface {}{"a", "b"} (ordered)
-	_ = m.Keys()         // []interface {}{1, 2} (ordered)
+	_ = m.Values()       // []string{"a", "b"} (ordered)
+	_ = m.Keys()         // []int{1, 2} (ordered)
 	m.Remove(1)          // 2->b
 	m.Clear()            // empty
 	m.Empty()            // true
@@ -612,12 +602,12 @@ A tree is a widely used data data structure that simulates a hierarchical tree s
 Implements [Container](#containers) interface.
 
 ```go
-type Tree interface {
-	containers.Container
+type Tree[V any] interface {
+	containers.Container[V]
 	// Empty() bool
 	// Size() int
 	// Clear()
-	// Values() []interface{}
+	// Values() []T
 	// String() string
 }
 ```
@@ -637,11 +627,12 @@ package main
 
 import (
 	"fmt"
-	rbt "github.com/emirpasic/gods/trees/redblacktree"
+
+	rbt "github.com/Arvin619/gods/trees/redblacktree"
 )
 
 func main() {
-	tree := rbt.NewWithIntComparator() // empty (keys are of type int)
+	tree := rbt.New[int, string]() // empty(keys are of type int)
 
 	tree.Put(1, "x") // 1->x
 	tree.Put(2, "b") // 1->x, 2->b (in order)
@@ -655,14 +646,14 @@ func main() {
 	//
 	//  RedBlackTree
 	//  │           ┌── 6
-	//	│       ┌── 5
-	//	│   ┌── 4
-	//	│   │   └── 3
-	//	└── 2
-	//		└── 1
+	//  │       ┌── 5
+	//  │   ┌── 4
+	//  │   │   └── 3
+	//  └── 2
+	//       └── 1
 
-	_ = tree.Values() // []interface {}{"a", "b", "c", "d", "e", "f"} (in order)
-	_ = tree.Keys()   // []interface {}{1, 2, 3, 4, 5, 6} (in order)
+	_ = tree.Values() // []string{"a", "b", "c", "d", "e", "f"} (in order)
+	_ = tree.Keys()   // []int{1, 2, 3, 4, 5, 6} (in order)
 
 	tree.Remove(2) // 1->a, 3->c, 4->d, 5->e, 6->f (in order)
 	fmt.Println(tree)
@@ -677,12 +668,6 @@ func main() {
 	tree.Clear() // empty
 	tree.Empty() // true
 	tree.Size()  // 0
-
-	// Other:
-	tree.Left() // gets the left-most (min) node
-	tree.Right() // get the right-most (max) node
-	tree.Floor(1) // get the floor node
-	tree.Ceiling(1) // get the ceiling node
 }
 ```
 
@@ -703,11 +688,12 @@ package main
 
 import (
 	"fmt"
-	avl "github.com/emirpasic/gods/trees/avltree"
+
+	avl "github.com/Arvin619/gods/trees/avltree"
 )
 
 func main() {
-	tree := avl.NewWithIntComparator() // empty(keys are of type int)
+	tree := avl.New[int, string]() // empty(keys are of type int)
 
 	tree.Put(1, "x") // 1->x
 	tree.Put(2, "b") // 1->x, 2->b (in order)
@@ -727,9 +713,8 @@ func main() {
 	//      └── 2
 	//          └── 1
 
-
-	_ = tree.Values() // []interface {}{"a", "b", "c", "d", "e", "f"} (in order)
-	_ = tree.Keys()   // []interface {}{1, 2, 3, 4, 5, 6} (in order)
+	_ = tree.Values() // []string{"a", "b", "c", "d", "e", "f"} (in order)
+	_ = tree.Keys()   // []int{1, 2, 3, 4, 5, 6} (in order)
 
 	tree.Remove(2) // 1->a, 3->c, 4->d, 5->e, 6->f (in order)
 	fmt.Println(tree)
@@ -770,11 +755,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/emirpasic/gods/trees/btree"
+
+	"github.com/Arvin619/gods/trees/btree"
 )
 
 func main() {
-	tree := btree.NewWithIntComparator(3) // empty (keys are of type int)
+	tree := btree.New[int, string](3) // empty (keys are of type int)
 
 	tree.Put(1, "x") // 1->x
 	tree.Put(2, "b") // 1->x, 2->b (in order)
@@ -795,8 +781,8 @@ func main() {
 	//     6
 	//         7
 
-	_ = tree.Values() // []interface {}{"a", "b", "c", "d", "e", "f", "g"} (in order)
-	_ = tree.Keys()   // []interface {}{1, 2, 3, 4, 5, 6, 7} (in order)
+	_ = tree.Values() // []string{"a", "b", "c", "d", "e", "f", "g"} (in order)
+	_ = tree.Keys()   // []int{1, 2, 3, 4, 5, 6, 7} (in order)
 
 	tree.Remove(2) // 1->a, 3->c, 4->d, 5->e, 6->f, 7->g (in order)
 	fmt.Println(tree)
@@ -813,12 +799,12 @@ func main() {
 	tree.Size()  // 0
 
 	// Other:
-	tree.Height() // gets the height of the tree
-	tree.Left() // gets the left-most (min) node
-	tree.LeftKey() // get the left-most (min) node's key
-	tree.LeftValue() // get the left-most (min) node's value
-	tree.Right() // get the right-most (max) node
-	tree.RightKey() // get the right-most (max) node's key
+	tree.Height()     // gets the height of the tree
+	tree.Left()       // gets the left-most (min) node
+	tree.LeftKey()    // get the left-most (min) node's key
+	tree.LeftValue()  // get the left-most (min) node's value
+	tree.Right()      // get the right-most (max) node
+	tree.RightKey()   // get the right-most (max) node's key
 	tree.RightValue() // get the right-most (max) node's value
 }
 ```
@@ -842,34 +828,36 @@ Implements [Tree](#trees), [ReverseIteratorWithIndex](#reverseiteratorwithindex)
 package main
 
 import (
-	"github.com/emirpasic/gods/trees/binaryheap"
-	"github.com/emirpasic/gods/utils"
+	"cmp"
+
+	"github.com/Arvin619/gods/trees/binaryheap"
 )
 
 func main() {
-
 	// Min-heap
-	heap := binaryheap.NewWithIntComparator() // empty (min-heap)
-	heap.Push(2)                              // 2
-	heap.Push(3)                              // 2, 3
-	heap.Push(1)                              // 1, 3, 2
-	heap.Values()                             // 1, 3, 2
-	_, _ = heap.Peek()                        // 1,true
-	_, _ = heap.Pop()                         // 1, true
-	_, _ = heap.Pop()                         // 2, true
-	_, _ = heap.Pop()                         // 3, true
-	_, _ = heap.Pop()                         // nil, false (nothing to pop)
-	heap.Push(1)                              // 1
-	heap.Clear()                              // empty
-	heap.Empty()                              // true
-	heap.Size()                               // 0
+	heap := binaryheap.New[int]() // empty (min-heap)
+	heap.Push(2)                  // 2
+	heap.Push(3)                  // 2, 3
+	heap.Push(1)                  // 1, 3, 2
+	heap.Values()                 // 1, 3, 2
+	_, _ = heap.Peek()            // 1,true
+	_, _ = heap.Pop()             // 1, true
+	_, _ = heap.Pop()             // 2, true
+	_, _ = heap.Pop()             // 3, true
+	_, _ = heap.Pop()             // nil, false (nothing to pop)
+	heap.Push(1)                  // 1
+	heap.Clear()                  // empty
+	heap.Empty()                  // true
+	heap.Size()                   // 0
 
 	// Max-heap
-	inverseIntComparator := func(a, b interface{}) int {
-		return -utils.IntComparator(a, b)
+	inverseIntComparator := func(a, b int) int {
+		return -cmp.Compare(a, b)
 	}
 	heap = binaryheap.NewWith(inverseIntComparator) // empty (min-heap)
-	heap.Push(2, 3, 1)                              // 3, 2, 1 (bulk optimized)
+	heap.Push(2)                                    // 2
+	heap.Push(3)                                    // 3, 2
+	heap.Push(1)                                    // 3, 2, 1
 	heap.Values()                                   // 3, 2, 1
 }
 ```
@@ -883,16 +871,16 @@ A queue that represents a first-in-first-out (FIFO) data structure. The usual en
 Implements [Container](#containers) interface.
 
 ```go
-type Queue interface {
-	Enqueue(value interface{})
-	Dequeue() (value interface{}, ok bool)
-	Peek() (value interface{}, ok bool)
+type Queue[T comparable] interface {
+	Enqueue(value T)
+	Dequeue() (value T, ok bool)
+	Peek() (value T, ok bool)
 
-	containers.Container
+	containers.Container[T]
 	// Empty() bool
 	// Size() int
 	// Clear()
-	// Values() []interface{}
+	// Values() []T
 	// String() string
 }
 ```
@@ -906,22 +894,21 @@ Implements [Queue](#queues), [IteratorWithIndex](#iteratorwithindex), [JSONSeria
 ```go
 package main
 
-import llq "github.com/emirpasic/gods/queues/linkedlistqueue"
+import llq "github.com/Arvin619/gods/queues/linkedlistqueue"
 
-// LinkedListQueueExample to demonstrate basic usage of LinkedListQueue
 func main() {
-    queue := llq.New()     // empty
-    queue.Enqueue(1)       // 1
-    queue.Enqueue(2)       // 1, 2
-    _ = queue.Values()     // 1, 2 (FIFO order)
-    _, _ = queue.Peek()    // 1,true
-    _, _ = queue.Dequeue() // 1, true
-    _, _ = queue.Dequeue() // 2, true
-    _, _ = queue.Dequeue() // nil, false (nothing to deque)
-    queue.Enqueue(1)       // 1
-    queue.Clear()          // empty
-    queue.Empty()          // true
-    _ = queue.Size()       // 0
+	queue := llq.New[int]() // empty
+	queue.Enqueue(1)        // 1
+	queue.Enqueue(2)        // 1, 2
+	_ = queue.Values()      // 1, 2 (FIFO order)
+	_, _ = queue.Peek()     // 1,true
+	_, _ = queue.Dequeue()  // 1, true
+	_, _ = queue.Dequeue()  // 2, true
+	_, _ = queue.Dequeue()  // nil, false (nothing to dequeue)
+	queue.Enqueue(1)        // 1
+	queue.Clear()           // empty
+	queue.Empty()           // true
+	_ = queue.Size()        // 0
 }
 ```
 
@@ -934,22 +921,21 @@ Implements [Queue](#queues), [ReverseIteratorWithIndex](#iteratorwithindex), [JS
 ```go
 package main
 
-import aq "github.com/emirpasic/gods/queues/arrayqueue"
+import aq "github.com/Arvin619/gods/queues/arrayqueue"
 
-// ArrayQueueExample to demonstrate basic usage of ArrayQueue
 func main() {
-    queue := aq.New()      // empty
-    queue.Enqueue(1)       // 1
-    queue.Enqueue(2)       // 1, 2
-    _ = queue.Values()     // 1, 2 (FIFO order)
-    _, _ = queue.Peek()    // 1,true
-    _, _ = queue.Dequeue() // 1, true
-    _, _ = queue.Dequeue() // 2, true
-    _, _ = queue.Dequeue() // nil, false (nothing to deque)
-    queue.Enqueue(1)       // 1
-    queue.Clear()          // empty
-    queue.Empty()          // true
-    _ = queue.Size()       // 0
+	queue := aq.New[int]() // empty
+	queue.Enqueue(1)       // 1
+	queue.Enqueue(2)       // 1, 2
+	_ = queue.Values()     // 1, 2 (FIFO order)
+	_, _ = queue.Peek()    // 1,true
+	_, _ = queue.Dequeue() // 1, true
+	_, _ = queue.Dequeue() // 2, true
+	_, _ = queue.Dequeue() // nil, false (nothing to dequeue)
+	queue.Enqueue(1)       // 1
+	queue.Clear()          // empty
+	queue.Empty()          // true
+	_ = queue.Size()       // 0
 }
 ```
 
@@ -964,25 +950,24 @@ Implements [Queue](#queues), [ReverseIteratorWithIndex](#iteratorwithindex), [JS
 ```go
 package main
 
-import cb "github.com/emirpasic/gods/queues/circularbuffer"
+import cb "github.com/Arvin619/gods/queues/circularbuffer"
 
-// CircularBufferExample to demonstrate basic usage of CircularBuffer
 func main() {
-    queue := cb.New(3)     // empty (max size is 3)
-    queue.Enqueue(1)       // 1
-    queue.Enqueue(2)       // 1, 2
-    queue.Enqueue(3)       // 1, 2, 3
-    _ = queue.Values()     // 1, 2, 3
-    queue.Enqueue(3)       // 4, 2, 3
-    _, _ = queue.Peek()    // 4,true
-    _, _ = queue.Dequeue() // 4, true
-    _, _ = queue.Dequeue() // 2, true
-    _, _ = queue.Dequeue() // 3, true
-    _, _ = queue.Dequeue() // nil, false (nothing to deque)
-    queue.Enqueue(1)       // 1
-    queue.Clear()          // empty
-    queue.Empty()          // true
-    _ = queue.Size()       // 0
+	queue := cb.New[int](3) // empty (max size is 3)
+	queue.Enqueue(1)        // 1
+	queue.Enqueue(2)        // 1, 2
+	queue.Enqueue(3)        // 1, 2, 3
+	_ = queue.Values()      // 1, 2, 3
+	queue.Enqueue(3)        // 4, 2, 3
+	_, _ = queue.Peek()     // 4,true
+	_, _ = queue.Dequeue()  // 4, true
+	_, _ = queue.Dequeue()  // 2, true
+	_, _ = queue.Dequeue()  // 3, true
+	_, _ = queue.Dequeue()  // nil, false (nothing to dequeue)
+	queue.Enqueue(1)        // 1
+	queue.Clear()           // empty
+	queue.Empty()           // true
+	_ = queue.Size()        // 0
 }
 ```
 
@@ -996,42 +981,40 @@ Implements [Queue](#queues), [ReverseIteratorWithIndex](#iteratorwithindex), [JS
 package main
 
 import (
-  pq "github.com/emirpasic/gods/queues/priorityqueue"
-  "github.com/emirpasic/gods/utils"
+	"cmp"
+
+	pq "github.com/Arvin619/gods/queues/priorityqueue"
 )
 
 // Element is an entry in the priority queue
 type Element struct {
-    name     string
-    priority int
+	name     string
+	priority int
 }
 
-// Comparator function (sort by element's priority value in descending order)
-func byPriority(a, b interface{}) int {
-    priorityA := a.(Element).priority
-    priorityB := b.(Element).priority
-    return -utils.IntComparator(priorityA, priorityB) // "-" descending order
+// Compare method (sort by element's priority value in descending order)
+func (e Element) Compare(another Element) int {
+	return -cmp.Compare(e.priority, another.priority) // "-" descending order
 }
 
-// PriorityQueueExample to demonstrate basic usage of BinaryHeap
 func main() {
-    a := Element{name: "a", priority: 1}
-    b := Element{name: "b", priority: 2}
-    c := Element{name: "c", priority: 3}
-    
-    queue := pq.NewWith(byPriority) // empty
-    queue.Enqueue(a)                // {a 1}
-    queue.Enqueue(c)                // {c 3}, {a 1}
-    queue.Enqueue(b)                // {c 3}, {b 2}, {a 1}
-    _ = queue.Values()              // [{c 3} {b 2} {a 1}]
-    _, _ = queue.Peek()             // {c 3} true
-    _, _ = queue.Dequeue()          // {c 3} true
-    _, _ = queue.Dequeue()          // {b 2} true
-    _, _ = queue.Dequeue()          // {a 1} true
-    _, _ = queue.Dequeue()          // <nil> false (nothing to dequeue)
-    queue.Clear()                   // empty
-    _ = queue.Empty()               // true
-    _ = queue.Size()                // 0
+	a := Element{name: "a", priority: 1}
+	b := Element{name: "b", priority: 2}
+	c := Element{name: "c", priority: 3}
+
+	queue := pq.NewWith(Element.Compare) // empty
+	queue.Enqueue(a)                     // {a 1}
+	queue.Enqueue(c)                     // {c 3}, {a 1}
+	queue.Enqueue(b)                     // {c 3}, {b 2}, {a 1}
+	_ = queue.Values()                   // [{c 3} {b 2} {a 1}]
+	_, _ = queue.Peek()                  // {c 3} true
+	_, _ = queue.Dequeue()               // {c 3} true
+	_, _ = queue.Dequeue()               // {b 2} true
+	_, _ = queue.Dequeue()               // {a 1} true
+	_, _ = queue.Dequeue()               // <nil> false (nothing to dequeue)
+	queue.Clear()                        // empty
+	_ = queue.Empty()                    // true
+	_ = queue.Size()                     // 0
 }
 ```
 
@@ -1056,43 +1039,16 @@ positive , if a > b
 Comparator signature:
 
 ```go
-type Comparator func(a, b interface{}) int
+type Comparator[T any] func(x, y T) int
 ```
 
-All common comparators for builtin types are included in the library:
-
+Common comparators for built-in types are provided in the [cmp](https://pkg.go.dev/cmp#Compare) package:
 ```go
-func StringComparator(a, b interface{}) int
+cmp.Compare[T cmp.Ordered]
 
-func IntComparator(a, b interface{}) int
-
-func Int8Comparator(a, b interface{}) int
-
-func Int16Comparator(a, b interface{}) int
-
-func Int32Comparator(a, b interface{}) int
-
-func Int64Comparator(a, b interface{}) int
-
-func UIntComparator(a, b interface{}) int
-
-func UInt8Comparator(a, b interface{}) int
-
-func UInt16Comparator(a, b interface{}) int
-
-func UInt32Comparator(a, b interface{}) int
-
-func UInt64Comparator(a, b interface{}) int
-
-func Float32Comparator(a, b interface{}) int
-
-func Float64Comparator(a, b interface{}) int
-
-func ByteComparator(a, b interface{}) int
-
-func RuneComparator(a, b interface{}) int
-
-func TimeComparator(a, b interface{}) int
+// Example
+var _ Comparator[int] = cmp.Compare[int]
+var _ Comparator[time.Time] = time.Time.Compare
 ```
 
 Writing custom comparators is easy:
@@ -1102,25 +1058,22 @@ package main
 
 import (
 	"fmt"
-	"github.com/emirpasic/gods/sets/treeset"
+
+	"github.com/Arvin619/gods/sets/treeset"
 )
 
+// User model (id and name)
 type User struct {
 	id   int
 	name string
 }
 
-// Custom comparator (sort by IDs)
-func byID(a, b interface{}) int {
-
-	// Type assertion, program will panic if this is not respected
-	c1 := a.(User)
-	c2 := b.(User)
-
+// compare method(sort by id)
+func (u User) Compare(another User) int {
 	switch {
-	case c1.id > c2.id:
+	case u.id > another.id:
 		return 1
-	case c1.id < c2.id:
+	case u.id < another.id:
 		return -1
 	default:
 		return 0
@@ -1128,7 +1081,7 @@ func byID(a, b interface{}) int {
 }
 
 func main() {
-	set := treeset.NewWith(byID)
+	set := treeset.NewWith(User.Compare)
 
 	set.Add(User{2, "Second"})
 	set.Add(User{3, "Third"})
@@ -1176,8 +1129,8 @@ Seeking to a specific element:
 
 ```go
 // Seek function, i.e. find element starting with "b"
-seek := func(index int, value interface{}) bool {
-    return strings.HasSuffix(value.(string), "b")
+seek := func(index int, value string) bool {
+    return strings.HasSuffix(value, "b")
 }
 
 // Seek to the condition and continue traversal from that point (forward).
@@ -1219,8 +1172,8 @@ Seeking to a specific element from the current iterator position:
 
 ```go
 // Seek function, i.e. find element starting with "b"
-seek := func(key interface{}, value interface{}) bool {
-    return strings.HasSuffix(value.(string), "b")
+seek := func(key int, value string) bool {
+    return strings.HasSuffix(value, "b")
 }
 
 // Seek to the condition and continue traversal from that point (forward).
@@ -1256,8 +1209,8 @@ Seeking to a specific element:
 
 ```go
 // Seek function, i.e. find element starting with "b"
-seek := func(index int, value interface{}) bool {
-    return strings.HasSuffix(value.(string), "b")
+seek := func(index int, value string) bool {
+    return strings.HasSuffix(value, "b")
 }
 
 // Seek to the condition and continue traversal from that point (in reverse).
@@ -1291,8 +1244,8 @@ if it.Last() {
 
 ```go
 // Seek function, i.e. find element starting with "b"
-seek := func(key interface{}, value interface{}) bool {
-    return strings.HasSuffix(value.(string), "b")
+seek := func(key int, value string) bool {
+    return strings.HasSuffix(value, "b")
 }
 
 // Seek to the condition and continue traversal from that point (in reverse).
@@ -1316,23 +1269,7 @@ Enumerable functions for ordered containers that implement [EnumerableWithIndex]
 Calls the given function once for each element, passing that element's index and value.
 
 ```go
-Each(func(index int, value interface{}))
-```
-
-**Map**
-
-Invokes the given function once for each element and returns a container containing the values returned by the given function.
-
-```go
-Map(func(index int, value interface{}) interface{}) Container
-```
-
-**Select**
-
-Returns a new container containing all elements for which the given function returns a true value.
-
-```go
-Select(func(index int, value interface{}) bool) Container
+Each(func(index int, value T))
 ```
 
 **Any**
@@ -1340,7 +1277,7 @@ Select(func(index int, value interface{}) bool) Container
 Passes each element of the container to the given function and returns true if the function ever returns true for any element.
 
 ```go
-Any(func(index int, value interface{}) bool) bool
+Any(func(index int, value T) bool) bool
 ```
 
 **All**
@@ -1348,7 +1285,7 @@ Any(func(index int, value interface{}) bool) bool
 Passes each element of the container to the given function and returns true if the function returns true for all elements.
 
 ```go
-All(func(index int, value interface{}) bool) bool
+All(func(index int, value T) bool) bool
 ```
 
 **Find**
@@ -1356,7 +1293,7 @@ All(func(index int, value interface{}) bool) bool
 Passes each element of the container to the given function and returns the first (index,value) for which the function is true or -1,nil otherwise if no element matches the criteria.
 
 ```go
-Find(func(index int, value interface{}) bool) (int, interface{})}
+Find(func(index int, value T) bool) (int, T)
 ```
 
 **Example:**
@@ -1366,53 +1303,54 @@ package main
 
 import (
 	"fmt"
-	"github.com/emirpasic/gods/sets/treeset"
+
+	"github.com/Arvin619/gods/sets/treeset"
 )
 
-func printSet(txt string, set *treeset.Set) {
+func printSet(txt string, set *treeset.Set[int]) {
 	fmt.Print(txt, "[ ")
-	set.Each(func(index int, value interface{}) {
+	set.Each(func(index int, value int) {
 		fmt.Print(value, " ")
 	})
 	fmt.Println("]")
 }
 
 func main() {
-	set := treeset.NewWithIntComparator()
+	set := treeset.New[int]()
 	set.Add(2, 3, 4, 2, 5, 6, 7, 8)
 	printSet("Initial", set) // [ 2 3 4 5 6 7 8 ]
 
-	even := set.Select(func(index int, value interface{}) bool {
-		return value.(int)%2 == 0
+	even := set.Select(func(index int, value int) bool {
+		return value%2 == 0
 	})
 	printSet("Even numbers", even) // [ 2 4 6 8 ]
 
-	foundIndex, foundValue := set.Find(func(index int, value interface{}) bool {
-		return value.(int)%2 == 0 && value.(int)%3 == 0
+	foundIndex, foundValue := set.Find(func(index int, value int) bool {
+		return value%2 == 0 && value%3 == 0
 	})
 	if foundIndex != -1 {
 		fmt.Println("Number divisible by 2 and 3 found is", foundValue, "at index", foundIndex) // value: 6, index: 4
 	}
 
-	square := set.Map(func(index int, value interface{}) interface{} {
-		return value.(int) * value.(int)
+	square := set.Map(func(index int, value int) int {
+		return value * value
 	})
 	printSet("Numbers squared", square) // [ 4 9 16 25 36 49 64 ]
 
-	bigger := set.Any(func(index int, value interface{}) bool {
-		return value.(int) > 5
+	bigger := set.Any(func(index int, value int) bool {
+		return value > 5
 	})
 	fmt.Println("Set contains a number bigger than 5 is ", bigger) // true
 
-	positive := set.All(func(index int, value interface{}) bool {
-		return value.(int) > 0
+	positive := set.All(func(index int, value int) bool {
+		return value > 0
 	})
 	fmt.Println("All numbers are positive is", positive) // true
 
-	evenNumbersSquared := set.Select(func(index int, value interface{}) bool {
-		return value.(int)%2 == 0
-	}).Map(func(index int, value interface{}) interface{} {
-		return value.(int) * value.(int)
+	evenNumbersSquared := set.Select(func(index int, value int) bool {
+		return value%2 == 0
+	}).Map(func(index int, value int) int {
+		return value * value
 	})
 	printSet("Chaining", evenNumbersSquared) // [ 4 16 36 64 ]
 }
@@ -1427,23 +1365,7 @@ Enumerable functions for ordered containers whose values whose elements are key/
 Calls the given function once for each element, passing that element's key and value.
 
 ```go
-Each(func(key interface{}, value interface{}))
-```
-
-**Map**
-
-Invokes the given function once for each element and returns a container containing the values returned by the given function as key/value pairs.
-
-```go
-Map(func(key interface{}, value interface{}) (interface{}, interface{})) Container
-```
-
-**Select**
-
-Returns a new container containing all elements for which the given function returns a true value.
-
-```go
-Select(func(key interface{}, value interface{}) bool) Container
+Each(func(key K, value V))
 ```
 
 **Any**
@@ -1451,7 +1373,7 @@ Select(func(key interface{}, value interface{}) bool) Container
 Passes each element of the container to the given function and returns true if the function ever returns true for any element.
 
 ```go
-Any(func(key interface{}, value interface{}) bool) bool
+Any(func(key K, value V) bool) bool
 ```
 
 **All**
@@ -1459,7 +1381,7 @@ Any(func(key interface{}, value interface{}) bool) bool
 Passes each element of the container to the given function and returns true if the function returns true for all elements.
 
 ```go
-All(func(key interface{}, value interface{}) bool) bool
+All(func(key K, value V) bool) bool
 ```
 
 **Find**
@@ -1467,7 +1389,7 @@ All(func(key interface{}, value interface{}) bool) bool
 Passes each element of the container to the given function and returns the first (key,value) for which the function is true or nil,nil otherwise if no element matches the criteria.
 
 ```go
-Find(func(key interface{}, value interface{}) bool) (interface{}, interface{})
+Find(func(key K, value V) bool) (K, V)
 ```
 
 **Example:**
@@ -1477,19 +1399,20 @@ package main
 
 import (
 	"fmt"
-	"github.com/emirpasic/gods/maps/treemap"
+
+	"github.com/Arvin619/gods/maps/treemap"
 )
 
-func printMap(txt string, m *treemap.Map) {
+func printMap(txt string, m *treemap.Map[string, int]) {
 	fmt.Print(txt, " { ")
-	m.Each(func(key interface{}, value interface{}) {
+	m.Each(func(key string, value int) {
 		fmt.Print(key, ":", value, " ")
 	})
 	fmt.Println("}")
 }
 
 func main() {
-	m := treemap.NewWithStringComparator()
+	m := treemap.New[string, int]()
 	m.Put("g", 7)
 	m.Put("f", 6)
 	m.Put("e", 5)
@@ -1499,37 +1422,37 @@ func main() {
 	m.Put("a", 1)
 	printMap("Initial", m) // { a:1 b:2 c:3 d:4 e:5 f:6 g:7 }
 
-	even := m.Select(func(key interface{}, value interface{}) bool {
-		return value.(int) % 2 == 0
+	even := m.Select(func(key string, value int) bool {
+		return value%2 == 0
 	})
 	printMap("Elements with even values", even) // { b:2 d:4 f:6 }
 
-	foundKey, foundValue := m.Find(func(key interface{}, value interface{}) bool {
-		return value.(int) % 2 == 0 && value.(int) % 3 == 0
+	foundKey, foundValue := m.Find(func(key string, value int) bool {
+		return value%2 == 0 && value%3 == 0
 	})
-	if foundKey != nil {
-		fmt.Println("Element with value divisible by 2 and 3 found is", foundValue, "with key", foundKey) // value: 6, index: 4
+	if foundKey != "" {
+		fmt.Println("Element with value divisible by 2 and 3 found is", foundValue, "with key", foundKey) // value: 6, key: f
 	}
 
-	square := m.Map(func(key interface{}, value interface{}) (interface{}, interface{}) {
-		return key.(string) + key.(string), value.(int) * value.(int)
+	square := m.Map(func(key string, value int) (string, int) {
+		return key + key, value * value
 	})
 	printMap("Elements' values squared and letters duplicated", square) // { aa:1 bb:4 cc:9 dd:16 ee:25 ff:36 gg:49 }
 
-	bigger := m.Any(func(key interface{}, value interface{}) bool {
-		return value.(int) > 5
+	bigger := m.Any(func(key string, value int) bool {
+		return value > 5
 	})
 	fmt.Println("Map contains element whose value is bigger than 5 is", bigger) // true
 
-	positive := m.All(func(key interface{}, value interface{}) bool {
-		return value.(int) > 0
+	positive := m.All(func(key string, value int) bool {
+		return value > 0
 	})
 	fmt.Println("All map's elements have positive values is", positive) // true
 
-	evenNumbersSquared := m.Select(func(key interface{}, value interface{}) bool {
-		return value.(int) % 2 == 0
-	}).Map(func(key interface{}, value interface{}) (interface{}, interface{}) {
-		return key, value.(int) * value.(int)
+	evenNumbersSquared := m.Select(func(key string, value int) bool {
+		return value%2 == 0
+	}).Map(func(key string, value int) (string, int) {
+		return key, value * value
 	})
 	printMap("Chaining", evenNumbersSquared) // { b:4 d:16 f:36 }
 }
@@ -1551,11 +1474,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/emirpasic/gods/maps/hashmap"
+	
+	"github.com/Arvin619/gods/maps/hashmap"
 )
 
 func main() {
-	m := hashmap.New()
+	m := hashmap.New[string, string]()
 	m.Put("a", "1")
 	m.Put("b", "2")
 	m.Put("c", "3")
@@ -1563,6 +1487,7 @@ func main() {
 	bytes, err := json.Marshal(m) // Same as "m.ToJSON(m)"
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 	fmt.Println(string(bytes)) // {"a":"1","b":"2","c":"3"}
 }
@@ -1576,16 +1501,18 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/emirpasic/gods/lists/arraylist"
+
+	"github.com/Arvin619/gods/lists/arraylist"
 )
 
 func main() {
-	list := arraylist.New()
+	list := arraylist.New[string]()
 	list.Add("a", "b", "c")
 
 	bytes, err := json.Marshal(list) // Same as "list.ToJSON(list)"
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 	fmt.Println(string(bytes)) // ["a","b","c"]
 }
@@ -1603,16 +1530,18 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/emirpasic/gods/maps/hashmap"
+
+	"github.com/Arvin619/gods/maps/hashmap"
 )
 
 func main() {
-	hm := hashmap.New()
+	hm := hashmap.New[string, string]()
 
 	bytes := []byte(`{"a":"1","b":"2"}`)
 	err := json.Unmarshal(bytes, &hm) // Same as "hm.FromJSON(bytes)"
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 	fmt.Println(hm) // HashMap map[b:2 a:1]
 }
@@ -1626,41 +1555,20 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/emirpasic/gods/lists/arraylist"
+
+	"github.com/Arvin619/gods/lists/arraylist"
 )
 
 func main() {
-	list := arraylist.New()
+	list := arraylist.New[string]()
 
 	bytes := []byte(`["a","b"]`)
 	err := json.Unmarshal(bytes, &list) // Same as "list.FromJSON(bytes)"
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 	fmt.Println(list) // ArrayList ["a","b"]
-}
-```
-
-### Sort
-
-Sort is a general purpose sort function.
-
-Lists have an in-place _Sort()_ function and all containers can return their sorted elements via _containers.GetSortedValues()_ function.
-
-Internally these all use the _utils.Sort()_ method:
-
-```go
-package main
-
-import "github.com/emirpasic/gods/utils"
-
-func main() {
-	strings := []interface{}{}                  // []
-	strings = append(strings, "d")              // ["d"]
-	strings = append(strings, "a")              // ["d","a"]
-	strings = append(strings, "b")              // ["d","a",b"
-	strings = append(strings, "c")              // ["d","a",b","c"]
-	utils.Sort(strings, utils.StringComparator) // ["a","b","c","d"]
 }
 ```
 
@@ -1671,7 +1579,10 @@ Container specific operations:
 ```go
 // Returns sorted container''s elements with respect to the passed comparator.
 // Does not affect the ordering of elements within the container.
-func GetSortedValues(container Container, comparator utils.Comparator) []interface{}
+func GetSortedValues[T cmp.Ordered](container Container[T]) []T 
+
+// GetSortedValuesFunc is the equivalent of GetSortedValues for containers of values that are not ordered.
+func GetSortedValuesFunc[T any](container Container[T], comparator utils.Comparator[T]) []T 
 ```
 
 Usage:
@@ -1680,14 +1591,17 @@ Usage:
 package main
 
 import (
-	"github.com/emirpasic/gods/lists/arraylist"
-	"github.com/emirpasic/gods/utils"
+	"cmp"
+	
+	"github.com/Arvin619/gods/lists/arraylist"
 )
 
 func main() {
-	list := arraylist.New()
+	list := arraylist.New[int]()
 	list.Add(2, 1, 3)
-	values := GetSortedValues(container, utils.StringComparator) // [1, 2, 3]
+	values := GetSortedValues(list) // [1, 2, 3]
+	
+	value = GetSortedValuesFunc(list, cmp.Compare) // [1, 2, 3]
 }
 ```
 
@@ -1730,45 +1644,3 @@ Collections and data structures found in other languages: Java Collections, C++ 
 There is often a tug of war between speed and memory when crafting algorithms. We choose to optimize for speed in most cases within reasonable limits on memory consumption.
 
 Thread safety is not a concern of this project, this should be handled at a higher level.
-
-### Testing and Benchmarking
-
-This takes a while, so test within sub-packages:
-
-`go test -run=NO_TEST -bench . -benchmem  -benchtime 1s ./...`
-
-<p align="center"><img src="https://cloud.githubusercontent.com/assets/3115942/16892979/5e698d46-4b27-11e6-864b-cb2b865327b6.png" /></p>
-
-### Contributing
-
-Biggest contribution towards this library is to use it and give us feedback for further improvements and additions.
-
-For direct contributions, _pull request_ into master branch or ask to become a contributor.
-
-Coding style:
-
-```shell
-# Install tooling and set path:
-go install gotest.tools/gotestsum@latest
-go install golang.org/x/lint/golint@latest
-go install github.com/kisielk/errcheck@latest
-export PATH=$PATH:$GOPATH/bin
-
-# Fix errors and warnings:
-go fmt ./... &&
-go test -v ./... && 
-golint -set_exit_status ./... && 
-! go fmt ./... 2>&1 | read &&
-go vet -v ./... &&
-gocyclo -avg -over 15 ../gods &&
-errcheck ./...
-```
-
-### License
-
-This library is distributed under the BSD-style license found in the [LICENSE](https://github.com/emirpasic/gods/blob/master/LICENSE) file.
-
-### Sponsors
-
-## <a href="https://www.browserstack.com/?ref=gods"><img src="http://www.hajdarevic.net/browserstack.svg" alt="BrowserStack" width="250"/></a>
-[BrowserStack](https://www.browserstack.com/?ref=webhook) is a cloud-based cross-browser testing tool that enables developers to test their websites across various browsers on different operating systems and mobile devices, without requiring users to install virtual machines, devices or emulators.
