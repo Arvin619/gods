@@ -247,7 +247,7 @@ func main() {
 
 A set is a data structure that can store elements and has no repeated values. It is a computer implementation of the mathematical concept of a finite set. Unlike most other collection types, rather than retrieving a specific element from a set, one typically tests an element for membership in a set. This structure is often used to ensure that no duplicates are present in a container.
 
-Set additionally allow set operations such as [intersection](https://en.wikipedia.org/wiki/Intersection_(set_theory)), [union](https://en.wikipedia.org/wiki/Union_(set_theory)), [difference](https://proofwiki.org/wiki/Definition:Set_Difference), etc.
+While concrete set implementations may directly provide operations like [intersection](https://en.wikipedia.org/wiki/Intersection_(set_theory)), [union](https://en.wikipedia.org/wiki/Union_(set_theory)), and [difference](https://proofwiki.org/wiki/Definition:Set_Difference), the `RichSet` interface (detailed below) offers an abstract and generic way to work with these operations across various set types.
 
 Implements [Container](#containers) interface.
 
@@ -266,6 +266,60 @@ type Set[T comparable] interface {
 }
 ```
 
+For richer, generic set operations like union, intersection, and difference, GoDS provides the `RichSet` interface. This allows functions to be written that operate on any set type (e.g., `*hashset.Set[T]`, `*treeset.Set[T]`) which implements these advanced operations. 
+
+```go
+type RichSet[T comparable, S any] interface {
+    *S // pointer constraint
+
+    Set[T]
+    Intersection(another *S) *S
+    Union(another *S) *S
+    Difference(another *S) *S
+}
+```
+
+Here's an example of how RichSet can be used with a generic function:
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/Arvin619/gods/sets"
+	"github.com/Arvin619/gods/sets/hashset"
+	"github.com/Arvin619/gods/sets/treeset"
+)
+
+func combineSetsExcluding[T comparable, S any, RS sets.RichSet[T, S]](combine1, combine2, exclude RS) RS {
+	rs := RS(combine1.Union(combine2))
+
+	rs = rs.Difference(exclude)
+
+	return rs
+}
+
+func main() {
+	hs1 := hashset.New(1, 2, 3)
+	hs2 := hashset.New(3, 4, 5)
+	hs3 := hashset.New(2, 5, 6)
+
+	resultHashSet := combineSetsExcluding(hs1, hs2, hs3)
+	fmt.Println("combineSetsExcluding HashSet:", resultHashSet)
+	// combineSetsExcluding HashSet: HashSet
+	// 1, 3, 4 (unordered)
+
+	ts1 := treeset.New("a", "b", "c")
+	ts2 := treeset.New("c", "d", "e")
+	ts3 := treeset.New("b", "e", "f")
+	resultTreeSet := combineSetsExcluding(ts1, ts2, ts3)
+	fmt.Println("combineSetsExcluding TreeSet:", resultTreeSet)
+	// combineSetsExcluding TreeSet: TreeSet
+	// a, c, d (ordered)
+}
+```
+ 
 #### HashSet
 
 A [set](#sets) backed by a hash table (actually a Go's map). It makes no guarantees as to the iteration order of the set.
