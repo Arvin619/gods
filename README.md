@@ -1,11 +1,6 @@
-[![GoDoc](https://godoc.org/github.com/emirpasic/gods?status.svg)](https://godoc.org/github.com/emirpasic/gods)
-[![Build Status](https://circleci.com/gh/emirpasic/gods/tree/master.svg?style=shield)](https://circleci.com/gh/emirpasic/gods?branch=master)
-[![Go Report Card](https://goreportcard.com/badge/github.com/emirpasic/gods)](https://goreportcard.com/report/github.com/emirpasic/gods)
-[![codecov](https://codecov.io/gh/emirpasic/gods/branch/master/graph/badge.svg)](https://codecov.io/gh/emirpasic/gods)
-[![Sourcegraph](https://sourcegraph.com/github.com/emirpasic/gods/-/badge.svg)](https://sourcegraph.com/github.com/emirpasic/gods?badge)
-[![Release](https://img.shields.io/github/release/emirpasic/gods.svg?style=flat-square)](https://github.com/emirpasic/gods/releases)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gods&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=gods)
-[![PyPI](https://img.shields.io/badge/License-BSD_2--Clause-green.svg)](https://github.com/emirpasic/gods/blob/master/LICENSE)
+[![GoDoc](https://godoc.org/github.com/Arvin619/gods?status.svg)](https://godoc.org/github.com/Arvin619/gods)
+[![Release](https://img.shields.io/github/v/release/Arvin619/gods.svg)](https://github.com/Arvin619/gods/releases)
+[![License](https://img.shields.io/badge/License-BSD_2--Clause-green.svg)](./LICENSE)
 
 # GoDS (Go Data Structures)
 
