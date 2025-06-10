@@ -17,6 +17,6 @@ type Tree[V any] interface {
 	// Empty() bool
 	// Size() int
 	// Clear()
-	// Values() []interface{}
+	// Values() []T
 	// String() string
 }

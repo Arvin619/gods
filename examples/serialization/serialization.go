@@ -1,4 +1,4 @@
-package serialization
+package main
 
 import (
 	"fmt"
@@ -15,7 +15,8 @@ func ListSerializationExample() {
 	// Serialization (marshalling)
 	json, err := list.ToJSON()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("failed to list to json:", err)
+		return
 	}
 	fmt.Println(string(json)) // ["a","b","c"]
 
@@ -23,7 +24,8 @@ func ListSerializationExample() {
 	json = []byte(`["a","b"]`)
 	err = list.FromJSON(json)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("failed to list from json:", err)
+		return
 	}
 	fmt.Println(list) // ArrayList ["a","b"]
 }
@@ -38,7 +40,8 @@ func MapSerializationExample() {
 	// Serialization (marshalling)
 	json, err := m.ToJSON()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("failed to m to json:", err)
+		return
 	}
 	fmt.Println(string(json)) // {"a":"1","b":"2","c":"3"}
 
@@ -46,7 +49,13 @@ func MapSerializationExample() {
 	json = []byte(`{"a":"1","b":"2"}`)
 	err = m.FromJSON(json)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("failed to m from json:", err)
+		return
 	}
 	fmt.Println(m) // HashMap {"a":"1","b":"2"}
+}
+
+func main() {
+	ListSerializationExample()
+	MapSerializationExample()
 }

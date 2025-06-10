@@ -39,7 +39,7 @@ func main() {
 		return value%2 == 0 && value%3 == 0
 	})
 	if foundKey != "" {
-		fmt.Println("Element with value divisible by 2 and 3 found is", foundValue, "with key", foundKey) // value: 6, index: 4
+		fmt.Println("Element with value divisible by 2 and 3 found is", foundValue, "with key", foundKey) // value: 6, key: f
 	}
 
 	square := m.Map(func(key string, value int) (string, int) {

@@ -16,12 +16,12 @@ type User struct {
 	name string
 }
 
-// Comparator function (sort by IDs)
-func byID(a, b User) int {
+// compare method(sort by id)
+func (u User) Compare(another User) int {
 	switch {
-	case a.id > b.id:
+	case u.id > another.id:
 		return 1
-	case a.id < b.id:
+	case u.id < another.id:
 		return -1
 	default:
 		return 0
@@ -30,7 +30,7 @@ func byID(a, b User) int {
 
 // CustomComparatorExample to demonstrate basic usage of CustomComparator
 func main() {
-	set := treeset.NewWith(byID)
+	set := treeset.NewWith(User.Compare)
 
 	set.Add(User{2, "Second"})
 	set.Add(User{3, "Third"})

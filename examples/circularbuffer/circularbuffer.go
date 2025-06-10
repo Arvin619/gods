@@ -18,7 +18,7 @@ func main() {
 	_, _ = queue.Dequeue()  // 4, true
 	_, _ = queue.Dequeue()  // 2, true
 	_, _ = queue.Dequeue()  // 3, true
-	_, _ = queue.Dequeue()  // nil, false (nothing to deque)
+	_, _ = queue.Dequeue()  // nil, false (nothing to dequeue)
 	queue.Enqueue(1)        // 1
 	queue.Clear()           // empty
 	queue.Empty()           // true
