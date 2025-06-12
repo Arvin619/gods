@@ -1,6 +1,6 @@
-[![GoDoc](https://godoc.org/github.com/Arvin619/gods?status.svg)](https://godoc.org/github.com/Arvin619/gods)
-[![Release](https://img.shields.io/github/v/release/Arvin619/gods.svg)](https://github.com/Arvin619/gods/releases)
-[![License](https://img.shields.io/badge/License-BSD_2--Clause-green.svg)](./LICENSE)
+[![GoDoc](https://img.shields.io/badge/reference-blue?logo=go&logoColor=white&labelColor=gray)](https://godoc.org/github.com/Arvin619/gods)
+[![Release]( https://img.shields.io/github/v/tag/Arvin619/gods?label=Version)](https://github.com/Arvin619/gods/releases)
+[![License](https://img.shields.io/badge/License-BSD_2--Clause-green)](./LICENSE)
 
 # GoDS (Go Data Structures)
 
